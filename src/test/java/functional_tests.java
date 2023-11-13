@@ -63,7 +63,7 @@ public class functional_tests {
     @ResourceLock(value = SYSTEM_PROPERTIES, mode = READ)
     void testUpdateUser() {
 
-        //Test how to Update user based on API Documentation
+        //Test how to update user based on API Documentation
 
         RestAssured.baseURI = BASE_URL;
 
