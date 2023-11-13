@@ -6,6 +6,8 @@
 
 ## General info
 This project contains 6 test cases for public REST API https://gorest.co.in/public/v2/users
+The plugin generates XML reports in the directory target/surefire-reports
+Test data is stored at testData.csv
 
 ## Technologies
 * Java 20
