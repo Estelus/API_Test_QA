@@ -18,4 +18,5 @@ This project contains 6 test cases for public REST API https://gorest.co.in/publ
 ## Setup
 
 1. Use JDK 20
-2. Start all test by using -mvn test 
+2. Start all test by using -mvn test
+3. To open a test report go to the following project directory: target/site/surefire-report.html and use internet browser
