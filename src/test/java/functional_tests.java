@@ -70,14 +70,14 @@ public class functional_tests {
         //This user ID and request body are present in APi documentation
 
         String userId = "/1700716";
-        String requestBody = "{\"name\":\"Allasani Peddana\", \"email\":\"allasani.peddana@15ce.com\", \"status\":\"active\"}";
+        String requestBody = "{\"name\":\"Allasani Peddana\", \"email\":\"allasani.pedddana@15ce.com\", \"status\":\"active\"}";
 
         Response response = given()
                 .header("Authorization", "Bearer " + ACCESS_TOKEN)
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .patch("/" + userId);
+                .patch(userId);
 
         response.then()
                 .statusCode(200);
