@@ -51,7 +51,7 @@ public class functional_tests {
         Response response = given()
                 .header("Authorization", "Bearer " + ACCESS_TOKEN)
                 .when()
-                .get(BASE_URL + "1700712");
+                .get(BASE_URL + "1700715");
 
         // Assertion to verify the response status code
         int statusCode = response.getStatusCode();
@@ -69,7 +69,7 @@ public class functional_tests {
 
         //This user ID and request body are present in APi documentation
 
-        String userId = "1700712";
+        String userId = "1700715";
         String requestBody = "{\"name\":\"Allasani Peddana\", \"email\":\"allasani.peddana@15ce.com\", \"status\":\"active\"}";
 
         Response response = given()
@@ -99,7 +99,7 @@ public class functional_tests {
         Response response = given()
                 .header("Authorization", "Bearer " + ACCESS_TOKEN)
                 .when()
-                .delete(BASE_URL + "/1700712 "); //Endpoint for delete of the user
+                .delete(BASE_URL + "/1700715"); //Endpoint for delete of the user
 
         // Verify the response status code
         response.then()
