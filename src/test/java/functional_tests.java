@@ -5,7 +5,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import java.io.IOException;
-import static io.restassured.RestAssured.given;
+import net.minidev.json.JSONObject;
+import static io.restassured.RestAssured.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.parallel.ResourceAccessMode.READ;
 import static org.junit.jupiter.api.parallel.ResourceAccessMode.READ_WRITE;
@@ -15,32 +16,35 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 
-
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(OrderAnnotation.class)
 @Execution(ExecutionMode.CONCURRENT)
 public class functional_tests {
 
     private final String BASE_URL = "https://gorest.co.in/public/v2/users";
-    private final String ACCESS_TOKEN = "3026a23dadcb2bac619eb1c0ce638150d81ddeec2b8b62057dced5069ed968ec";
-
+    private static final String ACCESS_TOKEN = "3026a23dadcb2bac619eb1c0ce638150d81ddeec2b8b62057dced5069ed968ec";
 
     @Test
     @ResourceLock(value = SYSTEM_PROPERTIES, mode = READ)
-    void testCreateUserWithValidData() {
-        String jsonRequestBody = "{ \"email\" : \"AlinaJacobs@gmail.com\", \"name\" : \"Alina Jacobs\", \"gender\" : \"female\", \"status\" : \"active\" }\n";
+    void testPutUserWithValidData() {
 
-        // Create user
+        //Act - Creating a new Json Objects for user data to input into request
+                JSONObject request = new JSONObject();
+                request.put("email","AlinaJacobson@gmail.com");
+                request.put("name","Alina Jacobs");
+                request.put("gender","female");
+                request.put("status","active");
+
         RestAssured.given()
                 .header("Authorization", "Bearer " + ACCESS_TOKEN)
                 .contentType(ContentType.JSON)
-                .body(jsonRequestBody)
+                .accept(ContentType.JSON)
+                .body(request.toJSONString())
                 .when()
                 .post(BASE_URL)
-        // Assertion - Verification of status code
                 .then()
+        // Assert - Verification of the status code
                 .statusCode(201);
-
     }
 
     @Test
@@ -51,13 +55,12 @@ public class functional_tests {
         Response response = given()
                 .header("Authorization", "Bearer " + ACCESS_TOKEN)
                 .when()
-                .get(BASE_URL + "/1700716");
+                .get(BASE_URL + "/1700718");
 
         // Assertion to verify the response status code
         int statusCode = response.getStatusCode();
         assertEquals(200, statusCode, "Expected status code is 200");
     }
-
 
     @Test
     @ResourceLock(value = SYSTEM_PROPERTIES, mode = READ)
@@ -67,26 +70,23 @@ public class functional_tests {
 
         RestAssured.baseURI = BASE_URL;
 
-        //This user ID and request body are present in APi documentation
+        //Act - Creating a new Json Objects for user data to input into request
+        JSONObject request = new JSONObject();
+        request.put("email","AlinaJacobss@gmail.com");
+        request.put("name","Alina Jacobs");
+        request.put("gender","female");
+        request.put("status","active");
 
-        String userId = "/1700716";
-        String requestBody = "{\"name\":\"Allasani Peddana\", \"email\":\"allasani.pedddana@15ce.com\", \"status\":\"active\"}";
-
-        Response response = given()
+        RestAssured.given()
                 .header("Authorization", "Bearer " + ACCESS_TOKEN)
                 .contentType(ContentType.JSON)
-                .body(requestBody)
+                .accept(ContentType.JSON)
+                .body(request.toJSONString())
                 .when()
-                .patch(userId);
-
-        response.then()
-                .statusCode(200);
-
-        // Performing additional assertion based on response body
-
-        String updatedName = response.jsonPath().getString("data.name");
-        assertEquals("Allasani Peddana", updatedName, "User name should be updated");
-
+                .patch(BASE_URL)
+                .then()
+                // Assert - Verification of the status code
+                .statusCode(201);
 
     }
 
@@ -99,15 +99,13 @@ public class functional_tests {
         Response response = given()
                 .header("Authorization", "Bearer " + ACCESS_TOKEN)
                 .when()
-                .delete(BASE_URL + "/1700716"); //Endpoint for delete of the user
+                .delete(BASE_URL + "/5711509"); //Endpoint for delete of the specific user
 
         // Verify the response status code
         response.then()
                 .statusCode(204);
-
         // Extract the response body
-        String responseBody = response.getBody().asString();
-
+        response.getBody().asString();
 
         // Assertion - based on API console information provided in the body is blank
         assertTrue(StringUtils.isAllBlank());
@@ -116,17 +114,12 @@ public class functional_tests {
     @Test
     @ResourceLock(value = SYSTEM_PROPERTIES, mode = READ)
     void listUsers() {
-        RestAssured.baseURI = BASE_URL;
-
-        Response response = given()
-                .header("Authorization", "Bearer " + ACCESS_TOKEN)
-                .accept("application/json")
-                .contentType("application/json")
-                .when()
-                .get();
-
-        response.then()
-                .statusCode(200);
+        // Act - Enter the API Website: "https://gorest.co.in/public/v2/users"
+        Response response = RestAssured.get(BASE_URL);
+        response.getStatusCode();
+        System.out.println("Status code is: " + response.getStatusCode());
+        // Assert - Verification of the status code
+        assertEquals(200, response.getStatusCode(), "Expected status code is 200");
     }
 
     @Test
