@@ -1,7 +1,7 @@
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.opencsv.CSVWriter;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -12,8 +12,8 @@ import java.util.Map;
 public class JsonToCsvConverter {
 
     public static String convertJsonToCsv(String jsonResponseBody, String outputFilePath) throws IOException {
-        // Parse JSON array into a list of maps
-        List<Map<String, String>> jsonData = parseJsonArray(jsonResponseBody);
+        // Parse JSON into a list of maps
+        List<Map<String, String>> jsonData = parseJson(jsonResponseBody);
 
         // Use OpenCSV to write data to CSV string
         StringWriter csvData = new StringWriter();
@@ -37,9 +37,18 @@ public class JsonToCsvConverter {
         return csvData.toString();
     }
 
-    private static List<Map<String, String>> parseJsonArray(String jsonArray) throws IOException {
-        // Parse JSON array into a list of maps
+    private static List<Map<String, String>> parseJson(String jsonString) throws IOException {
+        // Parse JSON into a list of maps
         ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(jsonArray, new TypeReference<List<Map<String, String>>>() {});
+        objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+
+        // Check if the JSON is an array or an object
+        if (jsonString.startsWith("[")) {
+            return objectMapper.readValue(jsonString, new TypeReference<List<Map<String, String>>>() {});
+        } else {
+            // If it's not an array, create a list with a single map
+            Map<String, String> singleEntry = objectMapper.readValue(jsonString, new TypeReference<Map<String, String>>() {});
+            return List.of(singleEntry);
+        }
     }
 }
