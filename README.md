@@ -1,4 +1,4 @@
-# Intrum-QA
+# API_Test_QA
 ## Table of contents
 * [General info](#general-info)
 * [Technologies](#technologies)
