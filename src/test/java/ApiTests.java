@@ -89,7 +89,6 @@ public class ApiTests {
                 .contentType(ContentType.JSON)
                 .extract().response();
 
-
         // Extract the response body
         String responseBody = response.getBody().asString();
 
@@ -99,7 +98,6 @@ public class ApiTests {
         // Assertion - based on API console information provided in the body is blank
         assertTrue(StringUtils.isAllBlank());
     }
-
     @Test
     @Order(5)
     void testDeleteUser() {
