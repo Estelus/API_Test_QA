@@ -126,7 +126,7 @@ public class ApiTests {
     @Order(6)
     void testTransferJsonToCsv() throws IOException {
         // Covering json string into CSV file
-        String jsonResponseBody = "[{\"email\":\"Alina_Jacob@gmail.com\",\"name\":\"Alina Jacob\",\"gender\":\"female\",\"status\":\"active\"}]";
+        String jsonResponseBody = "[{\"email\":\"Alina_Jacobs@gmail.com\",\"name\":\"Alina Jacobs\",\"gender\":\"female\",\"status\":\"active\"}]";
 
         // Specify the output file path
         String outputFilePath = "src/main/java/testData.csv";
@@ -136,7 +136,7 @@ public class ApiTests {
 
         // Additional assertion
         assertEquals("email,name,gender,status\n" +
-                "Alina_Jacob@gmail.com,Alina Jacob,female,active\n", csvData, "CSV data does not match");
+                "Alina_Jacobs@gmail.com,Alina Jacobs,female,active\n", csvData, "CSV data does not match");
     }
 }
 
