@@ -4,18 +4,14 @@ import io.restassured.response.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
-
 import java.io.IOException;
-
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(OrderAnnotation.class)
 public class ApiTests {
-
     private static final String BASE_URL = "https://gorest.co.in";
     private static final String ACCESS_TOKEN = "3026a23dadcb2bac619eb1c0ce638150d81ddeec2b8b62057dced5069ed968ec";
-
-
+    private static int createdUserId;
     @BeforeEach
     void setUp() {
         RestAssured.baseURI = BASE_URL;
@@ -24,10 +20,9 @@ public class ApiTests {
     void tearDown() {
         // performing cleanup if needed
     }
-
     @Test
     @Order(1)
-    void testListUsers() {
+    void testListAllUsers() {
         Response response = given()
                 .header("Authorization", "Bearer " + ACCESS_TOKEN)
                 .when()
@@ -37,11 +32,10 @@ public class ApiTests {
                 .contentType(ContentType.JSON)
                 .extract().response();
 
-        // Add assertions for the response
+        // Assertions for the response
         assertNotNull(response.jsonPath().getList("data"), "User list is null");
         assertFalse(response.jsonPath().getList("data").isEmpty(), "User list is empty");
     }
-
     @Test
     @Order(2)
     void testCreateUser() {
@@ -49,7 +43,7 @@ public class ApiTests {
         Response response = given()
                 .header("Authorization", "Bearer " + ACCESS_TOKEN)
                 .contentType(ContentType.JSON)
-                .body(("{\"name\":\"Alina Jacobs\", \"gender\":\"female\", \"email\":\"Alina_jacobs@gmail.com\", \"status\":\"inactive\"}"))
+                .body("{\"name\":\"Alina Jacobs\", \"gender\":\"female\", \"email\":\"Alina_jacob@gmail.com\", \"status\":\"inactive\"}")
                 .when()
                 .post("/public/v2/users")
                 .then()
@@ -58,13 +52,10 @@ public class ApiTests {
                 .extract().response();
 
         // Extract the user ID as Integer and convert it to String
-        String createdUserId = String.valueOf(response.jsonPath().getInt("id"));
+        createdUserId = response.jsonPath().getInt("id");
 
         // Log extracted ID
         System.out.println("Created User ID: " + createdUserId);
-
-        // Ensure the createdUserId is not null
-        assertNotNull(createdUserId, "Created user ID is null");
     }
     @Test
     @Order(3)
@@ -73,7 +64,7 @@ public class ApiTests {
         Response response = given()
                 .header("Authorization", "Bearer " + ACCESS_TOKEN)
                 .when()
-                .get("/public/v2/users/2139159")
+                .get("/public/v2/users/2139161")
                 .then()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
@@ -92,7 +83,7 @@ public class ApiTests {
                 .contentType(ContentType.JSON)
                 .body("{\"name\":\"Alina Jacob\", \"email\":\"Alina_jacob@gmail.com\", \"status\":\"inactive\"}")
                 .when()
-                .patch("/public/v2/users/2139159")
+                .patch("/public/v2/users/2139161")
                 .then()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
@@ -117,7 +108,7 @@ public class ApiTests {
         Response response = given()
                 .header("Authorization", "Bearer " + ACCESS_TOKEN)
                 .when()
-                .delete("/public/v2/users/2139159")
+                .delete("/public/v2/users/2139161")
                 .then()
                 .statusCode(204)
                 .extract().response();
@@ -135,7 +126,7 @@ public class ApiTests {
     @Order(6)
     void testTransferJsonToCsv() throws IOException {
         // Covering json string into CSV file
-        String jsonResponseBody = "[{\"email\":\"Alina_Jacobs@gmail.com\",\"name\":\"Alina Jacob\",\"gender\":\"female\",\"status\":\"active\"}]";
+        String jsonResponseBody = "[{\"email\":\"Alina_Jacob@gmail.com\",\"name\":\"Alina Jacob\",\"gender\":\"female\",\"status\":\"active\"}]";
 
         // Specify the output file path
         String outputFilePath = "src/main/java/testData.csv";
@@ -145,7 +136,7 @@ public class ApiTests {
 
         // Additional assertion
         assertEquals("email,name,gender,status\n" +
-                "Alina_Jacobs@gmail.com,Alina Jacob,female,active\n", csvData, "CSV data does not match");
+                "Alina_Jacob@gmail.com,Alina Jacob,female,active\n", csvData, "CSV data does not match");
     }
 }
 
